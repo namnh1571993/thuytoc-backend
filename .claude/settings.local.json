@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(sqlite3 \"/Users/namnguyen/Desktop/AI Challenge/Day 2/THUY-TOC-LandingPage/brain.db\" \".tables\")",
+      "Bash(sqlite3 \"/Users/namnguyen/Desktop/AI Challenge/Day 2/THUY-TOC-LandingPage/brain.db\" \"SELECT * FROM brand_voice;\")",
+      "Bash(sqlite3 \"/Users/namnguyen/Desktop/AI Challenge/Day 2/THUY-TOC-LandingPage/brain.db\" \"SELECT * FROM business;\")",
+      "Bash(sqlite3 \"/Users/namnguyen/Desktop/AI Challenge/Day 2/THUY-TOC-LandingPage/brain.db\" \"SELECT * FROM knowledge;\")",
+      "Bash(sqlite3 \"/Users/namnguyen/Desktop/AI Challenge/my-brain/brain.db\" \"SELECT * FROM brand_voice;\")"
+    ]
+  }
+}

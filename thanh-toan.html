@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Thanh Toán | THUỶ TỘC</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#0a0e1a;--surface:#111827;--surface2:#1a2235;
+      --accent:#00c8ff;--accent2:#0080ff;--text:#f0f4ff;
+      --muted:#8a9bb5;--success:#00e676;--danger:#ff5252;--warn:#ff9800;
+      --border:rgba(0,200,255,.15);
+    }
+    body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+    header{background:rgba(10,14,26,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:18px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+    .logo{font-family:'Oswald',sans-serif;font-size:1.6rem;font-weight:700;letter-spacing:3px}
+    .logo span{color:var(--accent)}
+    .back-btn{color:var(--muted);text-decoration:none;font-size:.85rem;font-weight:600;letter-spacing:1px;transition:.2s}
+    .back-btn:hover{color:var(--accent)}
+
+    main{max-width:860px;margin:0 auto;padding:50px 20px 80px}
+
+    .page-title{font-family:'Oswald',sans-serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;letter-spacing:2px;text-align:center;margin-bottom:6px}
+    .page-title span{color:var(--accent)}
+    .page-sub{text-align:center;color:var(--muted);font-size:.88rem;margin-bottom:40px}
+
+    /* ── STEP INDICATOR ── */
+    .steps-bar{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:44px}
+    .step-dot{display:flex;flex-direction:column;align-items:center;gap:8px;position:relative}
+    .step-dot .circle{width:36px;height:36px;border-radius:50%;border:2px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;color:var(--muted);transition:.3s}
+    .step-dot.active .circle{border-color:var(--accent);background:rgba(0,200,255,.15);color:var(--accent)}
+    .step-dot.done .circle{border-color:var(--success);background:rgba(0,230,118,.15);color:var(--success)}
+    .step-dot .label{font-size:.72rem;color:var(--muted);letter-spacing:.5px;white-space:nowrap}
+    .step-dot.active .label{color:var(--accent)}
+    .step-dot.done .label{color:var(--success)}
+    .step-line{width:80px;height:2px;background:var(--border);margin-bottom:20px;transition:.3s}
+    .step-line.done{background:var(--success)}
+
+    /* ── CARD ── */
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px;display:none}
+    .card.active{display:block}
+    .card-title{font-family:'Oswald',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--accent);text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:10px}
+    .card-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+    /* ── COURSE LIST ── */
+    .course-list{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+    .course-item{background:var(--surface2);border:2px solid transparent;border-radius:12px;padding:14px 18px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:.2s}
+    .course-item:hover{border-color:rgba(0,200,255,.4)}
+    .course-item.selected{border-color:var(--accent);background:rgba(0,200,255,.08)}
+    .course-item.selected .check{opacity:1}
+    .ci-info{flex:1}
+    .ci-name{font-weight:700;font-size:.92rem;margin-bottom:3px}
+    .ci-meta{font-size:.75rem;color:var(--muted);display:flex;gap:10px}
+    .ci-price{font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:700;white-space:nowrap}
+    .check{width:22px;height:22px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;opacity:0;flex-shrink:0;transition:.2s}
+
+    /* ── FORM ── */
+    .field{margin-bottom:16px}
+    .field label{display:block;font-size:.75rem;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+    .field input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;color:var(--text);font-family:'Montserrat',sans-serif;font-size:.92rem;outline:none;transition:.2s}
+    .field input:focus{border-color:var(--accent)}
+    .field input::placeholder{color:var(--muted)}
+
+    /* ── BUTTON ── */
+    .btn{display:block;width:100%;padding:15px;font-family:'Oswald',sans-serif;font-size:1.05rem;font-weight:700;letter-spacing:2px;border:none;border-radius:12px;cursor:pointer;transition:.2s;text-align:center}
+    .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;margin-top:20px}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,200,255,.3)}
+    .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+    /* ── QR SECTION ── */
+    .qr-layout{display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:start}
+    @media(max-width:600px){.qr-layout{grid-template-columns:1fr}}
+    .qr-box{background:#fff;border-radius:16px;padding:14px;box-shadow:0 0 40px rgba(0,200,255,.2);text-align:center}
+    .qr-box img{width:200px;height:200px;display:block;border-radius:8px}
+
+    .order-summary{background:var(--surface2);border-radius:12px;padding:20px;margin-bottom:16px}
+    .sum-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:.88rem}
+    .sum-row:last-child{border:none;padding-top:12px;margin-top:4px}
+    .sum-row .label{color:var(--muted)}
+    .sum-row .val{font-weight:700}
+    .sum-row.total .val{font-family:'Oswald',sans-serif;font-size:1.3rem;color:var(--accent)}
+
+    .ref-box{background:rgba(0,200,255,.07);border:1px dashed rgba(0,200,255,.4);border-radius:10px;padding:14px;margin-bottom:16px;text-align:center}
+    .ref-label{font-size:.72rem;color:var(--muted);margin-bottom:4px;letter-spacing:1px}
+    .ref-code{font-weight:700;color:var(--accent);font-size:.95rem;letter-spacing:1px}
+
+    .poll-status{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:10px;background:rgba(255,152,0,.08);border:1px solid rgba(255,152,0,.3);font-size:.85rem;color:var(--warn);margin-top:16px}
+    .pulse{width:10px;height:10px;border-radius:50%;background:var(--warn);animation:pulse 1.2s infinite}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+
+    /* ── SUCCESS ── */
+    .success-card{text-align:center;padding:50px 32px}
+    .success-icon{font-size:4rem;margin-bottom:20px}
+    .success-card h2{font-family:'Oswald',sans-serif;font-size:2rem;letter-spacing:2px;color:var(--success);margin-bottom:12px}
+    .success-card p{color:var(--muted);font-size:.92rem;line-height:1.7;max-width:400px;margin:0 auto 28px}
+    .success-details{background:var(--surface2);border-radius:12px;padding:20px;text-align:left;margin-bottom:24px}
+    .btn-zalo{display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#00b4ff,#06d6a0);color:#000;font-family:'Oswald',sans-serif;font-size:1rem;font-weight:700;letter-spacing:2px;border-radius:12px;text-decoration:none;transition:.2s}
+    .btn-zalo:hover{transform:translateY(-2px)}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">THUỶ&nbsp;<span>T</span>ỘC</div>
+  <a href="index.html" class="back-btn">← Trang chủ</a>
+</header>
+
+<main>
+  <h1 class="page-title">ĐĂNG KÝ & <span>THANH TOÁN</span></h1>
+  <p class="page-sub">Hoàn tất trong 3 bước đơn giản</p>
+
+  <!-- STEP BAR -->
+  <div class="steps-bar">
+    <div class="step-dot active" id="dot-1"><div class="circle">1</div><div class="label">Chọn khoá</div></div>
+    <div class="step-line" id="line-1"></div>
+    <div class="step-dot" id="dot-2"><div class="circle">2</div><div class="label">Quét QR</div></div>
+    <div class="step-line" id="line-2"></div>
+    <div class="step-dot" id="dot-3"><div class="circle">3</div><div class="label">Xác nhận</div></div>
+  </div>
+
+  <!-- STEP 1: Chọn khoá + điền thông tin -->
+  <div class="card active" id="step1">
+    <div class="card-title">Chọn khoá học</div>
+
+    <div class="course-list">
+      <div class="course-item" data-id="1" data-name="SUP Trải Nghiệm Lần Đầu Phú Quốc" data-amount="2000" onclick="selectCourse(this)" style="border-color:rgba(255,152,0,.4);background:rgba(255,152,0,.05)">
+        <div class="ci-info">
+          <div class="ci-name">🔥 SUP Trải Nghiệm Lần Đầu <span style="background:linear-gradient(135deg,#ff9800,#ff5722);color:#000;font-size:.68rem;padding:2px 8px;border-radius:20px;font-weight:800;margin-left:6px">ƯU ĐÃI</span></div>
+          <div class="ci-meta"><span>⏱ 1 Ngày</span><span>📍 Phú Quốc</span><span>🎯 Lần đầu</span></div>
+        </div>
+        <div class="ci-price" style="color:#ff9800">2.000đ</div>
+        <div class="check">✓</div>
+      </div>
+
+      <div class="course-item" data-id="0" data-name="Lướt Ván Surfing" data-amount="4500000" onclick="selectCourse(this)">
+        <div class="ci-info">
+          <div class="ci-name">🏄 Lướt Ván (Surfing)</div>
+          <div class="ci-meta"><span>⏱ 3 Ngày</span><span>📍 Nha Trang</span><span>🎯 Tất cả</span></div>
+        </div>
+        <div class="ci-price">4.500.000đ</div>
+        <div class="check">✓</div>
+      </div>
+
+      <div class="course-item" data-id="0" data-name="Kite Surfing" data-amount="8900000" onclick="selectCourse(this)">
+        <div class="ci-info">
+          <div class="ci-name">🪁 Lướt Ván Diều (Kite Surfing)</div>
+          <div class="ci-meta"><span>⏱ 5 Ngày</span><span>📍 Phú Quý</span><span>🎯 Nâng cao</span></div>
+        </div>
+        <div class="ci-price">8.900.000đ</div>
+        <div class="check">✓</div>
+      </div>
+
+      <div class="course-item" data-id="0" data-name="SUP & Efoil" data-amount="1200000" onclick="selectCourse(this)">
+        <div class="ci-info">
+          <div class="ci-name">🏊 SUP & Efoil</div>
+          <div class="ci-meta"><span>⏱ 1 Ngày</span><span>📍 Phú Quốc</span><span>🎯 Cơ bản</span></div>
+        </div>
+        <div class="ci-price">1.200.000đ</div>
+        <div class="check">✓</div>
+      </div>
+    </div>
+
+    <div class="card-title" style="margin-top:28px">Thông tin của bạn</div>
+    <div class="field"><label>Họ và tên *</label><input id="inp-name" placeholder="Nguyễn Văn A" oninput="validateStep1()"/></div>
+    <div class="field"><label>Số điện thoại *</label><input id="inp-phone" type="tel" placeholder="0901234567" oninput="validateStep1()"/></div>
+
+    <button class="btn btn-primary" id="btn-next1" onclick="goStep2()" disabled>Tiếp theo — Xem QR thanh toán →</button>
+  </div>
+
+  <!-- STEP 2: QR + polling -->
+  <div class="card" id="step2">
+    <div class="card-title">Quét QR & chuyển khoản</div>
+
+    <div class="qr-layout">
+      <div>
+        <div class="qr-box">
+          <img id="qr-img" src="" alt="QR Thanh Toán"/>
+        </div>
+      </div>
+      <div>
+        <div class="order-summary" id="order-summary"></div>
+        <div class="ref-box">
+          <div class="ref-label">NỘI DUNG CHUYỂN KHOẢN (ghi đúng)</div>
+          <div class="ref-code" id="ref-display"></div>
+        </div>
+        <div style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:12px">
+          1. Mở app ngân hàng → Quét mã QR<br>
+          2. Kiểm tra số tiền & nội dung<br>
+          3. Xác nhận chuyển khoản<br>
+          4. Trang tự động cập nhật khi nhận tiền ✅
+        </div>
+        <div class="poll-status" id="poll-status">
+          <div class="pulse"></div>
+          <span>Đang chờ xác nhận thanh toán...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Success -->
+  <div class="card active success-card" id="step3" style="display:none">
+    <div class="success-icon">🎉</div>
+    <h2>THANH TOÁN THÀNH CÔNG!</h2>
+    <p>Cảm ơn bạn đã đăng ký. Thuỷ Tộc sẽ liên hệ xác nhận lịch học trong vòng 2 giờ làm việc.</p>
+    <div class="order-summary success-details" id="success-summary"></div>
+    <a href="https://zalo.me/0339481070" target="_blank" class="btn-zalo">📩 Nhắn Zalo để xác nhận lịch</a>
+  </div>
+</main>
+
+<script>
+  // ── Config ───────────────────────────────────────────────────────
+  const API_BASE  = (window.location.protocol === 'file:') 
+    ? 'http://localhost:8000' 
+    : window.location.origin;
+  const BANK_CODE = 'MB';
+  const BANK_ACC  = '0339481070';
+  const BANK_NAME = 'NGUYEN HOANG NAM';
+
+  // ── State ────────────────────────────────────────────────────────
+  let selectedCourse = null;
+  let orderId        = null;
+  let pollTimer      = null;
+
+  // ── Step 1: Chọn khoá ───────────────────────────────────────────
+  function selectCourse(el) {
+    document.querySelectorAll('.course-item').forEach(i => i.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedCourse = {
+      name:   el.dataset.name,
+      amount: parseInt(el.dataset.amount),
+      id:     parseInt(el.dataset.id) || 0,
+    };
+    validateStep1();
+  }
+
+  function validateStep1() {
+    const name  = document.getElementById('inp-name').value.trim();
+    const phone = document.getElementById('inp-phone').value.trim();
+    document.getElementById('btn-next1').disabled = !(selectedCourse && name && phone);
+  }
+
+  // ── Step 2: Tạo đơn pending + hiện QR ───────────────────────────
+  async function goStep2() {
+    const name  = document.getElementById('inp-name').value.trim();
+    const phone = document.getElementById('inp-phone').value.trim();
+    const ref   = buildRef(selectedCourse.name, name);
+
+    // Gọi API tạo đơn pending
+    try {
+      const res = await fetch(`${API_BASE}/api/checkout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name, phone,
+          product_id: selectedCourse.id,
+          amount:     selectedCourse.amount,
+          ref_code:   ref,
+        }),
+      });
+      const data = await res.json();
+      orderId = data.order_id;
+    } catch(e) {
+      // Server không chạy → vẫn hiện QR, chỉ không có auto-confirm
+      console.warn('API không phản hồi — chế độ offline');
+      orderId = null;
+    }
+
+    // Hiện QR
+    const qrUrl = `https://img.vietqr.io/image/${BANK_CODE}-${BANK_ACC}-compact2.jpg`
+      + `?amount=${selectedCourse.amount}`
+      + `&addInfo=${encodeURIComponent(ref)}`
+      + `&accountName=${encodeURIComponent(BANK_NAME)}`;
+    document.getElementById('qr-img').src = qrUrl;
+    document.getElementById('ref-display').textContent = ref;
+
+    // Order summary
+    document.getElementById('order-summary').innerHTML = `
+      <div class="sum-row"><span class="label">Khoá học</span><span class="val">${selectedCourse.name}</span></div>
+      <div class="sum-row"><span class="label">Ngân hàng</span><span class="val">MBBank</span></div>
+      <div class="sum-row"><span class="label">Số tài khoản</span><span class="val">${BANK_ACC}</span></div>
+      <div class="sum-row total"><span class="label">Số tiền</span><span class="val">${selectedCourse.amount.toLocaleString('vi-VN')} đ</span></div>`;
+
+    switchStep(2);
+
+    // Bắt đầu poll nếu có orderId
+    if (orderId) startPolling();
+  }
+
+  // ── Polling: hỏi server mỗi 3 giây ─────────────────────────────
+  function startPolling() {
+    // Kiểm tra ngay lập tức 1 lần đầu
+    checkStatus();
+    // Sau đó kiểm tra mỗi 3 giây
+    pollTimer = setInterval(checkStatus, 3000);
+  }
+
+  async function checkStatus() {
+    if (!orderId) return;
+    try {
+      const res  = await fetch(`${API_BASE}/api/orders/${orderId}/status?t=${Date.now()}`);
+      const data = await res.json();
+      if (data.status === 'paid') {
+        clearInterval(pollTimer);
+        goStep3();
+      }
+    } catch(e) { /* ignore network errors */ }
+  }
+
+  // ── Khi người dùng quay lại tab từ app ngân hàng, kiểm tra ngay ──
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && orderId) {
+      // Dừng timer cũ (có thể đã bị đóng băng)
+      clearInterval(pollTimer);
+      // Kiểm tra ngay + khởi động lại
+      checkStatus();
+      pollTimer = setInterval(checkStatus, 3000);
+    }
+  });
+
+  // ── Step 3: Success ──────────────────────────────────────────────
+  function goStep3() {
+    const name  = document.getElementById('inp-name').value.trim();
+    document.getElementById('success-summary').innerHTML = `
+      <div class="sum-row"><span class="label">Khách hàng</span><span class="val">${name}</span></div>
+      <div class="sum-row"><span class="label">Khoá học</span><span class="val">${selectedCourse.name}</span></div>
+      <div class="sum-row total"><span class="label">Đã thanh toán</span><span class="val" style="color:var(--success)">${selectedCourse.amount.toLocaleString('vi-VN')} đ ✅</span></div>`;
+    switchStep(3);
+  }
+
+  // ── UI helpers ───────────────────────────────────────────────────
+  function switchStep(n) {
+    ['step1','step2','step3'].forEach((id,i) => {
+      document.getElementById(id).style.display = (i+1===n) ? 'block' : 'none';
+    });
+    // Step dots
+    [1,2,3].forEach(i => {
+      const dot = document.getElementById('dot-'+i);
+      dot.className = 'step-dot' + (i < n ? ' done' : i === n ? ' active' : '');
+      if(i < n) dot.querySelector('.circle').textContent = '✓';
+    });
+    if(n > 1) document.getElementById('line-1').classList.toggle('done', n >= 2);
+    if(n > 2) document.getElementById('line-2').classList.toggle('done', n >= 3);
+  }
+
+  function buildRef(courseName, customerName) {
+    const clean = (customerName || 'KH').normalize('NFD')
+      .replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'').toUpperCase().slice(0,6);
+    const code = Math.floor(1000 + Math.random() * 9000);
+    return `THUYTOC ${clean} ${code}`;
+  }
+
+  // ── Auto-select từ URL param ─────────────────────────────────────
+  window.addEventListener('DOMContentLoaded', () => {
+    const map = { 'sup-uudai': 0, surfing: 1, kite: 2, sup: 3 };
+    const course = new URLSearchParams(location.search).get('course');
+    if (course && map[course] !== undefined) {
+      const items = document.querySelectorAll('.course-item');
+      if (items[map[course]]) selectCourse(items[map[course]]);
+    }
+    // Init display
+    document.getElementById('step1').style.display = 'block';
+    document.getElementById('step2').style.display = 'none';
+    document.getElementById('step3').style.display = 'none';
+  });
+</script>
+</body>
+</html>

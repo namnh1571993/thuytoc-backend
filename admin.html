@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin | THUỶ TỘC CRM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#0a0e1a;--surface:#111827;--surface2:#1a2235;
+      --accent:#00c8ff;--accent2:#0080ff;--text:#f0f4ff;
+      --muted:#8a9bb5;--success:#00e676;--danger:#ff5252;--warn:#ff9800;
+      --border:rgba(0,200,255,.15);
+    }
+    body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+    /* ── HEADER ── */
+    header{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-family:'Oswald',sans-serif;font-size:1.4rem;letter-spacing:3px}
+    .logo span{color:var(--accent)}
+    .badge{background:rgba(0,200,255,.1);border:1px solid var(--border);color:var(--accent);font-size:.72rem;padding:3px 10px;border-radius:20px;letter-spacing:1px;font-weight:700}
+
+    /* ── TABS ── */
+    .tabs{display:flex;gap:4px;padding:24px 32px 0;border-bottom:1px solid var(--border)}
+    .tab{padding:12px 28px;font-family:'Oswald',sans-serif;font-size:.95rem;letter-spacing:1.5px;cursor:pointer;border-radius:10px 10px 0 0;color:var(--muted);background:transparent;border:none;transition:.2s}
+    .tab:hover{color:var(--text);background:var(--surface2)}
+    .tab.active{color:var(--accent);background:var(--surface);border:1px solid var(--border);border-bottom:1px solid var(--surface)}
+
+    /* ── CONTENT ── */
+    .content{padding:32px;display:none}
+    .content.active{display:block}
+
+    /* ── TOOLBAR ── */
+    .toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+    .toolbar h2{font-family:'Oswald',sans-serif;font-size:1.2rem;letter-spacing:2px;color:var(--text)}
+    .btn{padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-family:'Montserrat',sans-serif;font-weight:700;font-size:.82rem;letter-spacing:.5px;transition:.2s}
+    .btn-add{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000}
+    .btn-add:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,200,255,.3)}
+    .btn-sm{padding:5px 12px;font-size:.75rem;border-radius:6px}
+    .btn-edit{background:rgba(0,200,255,.1);color:var(--accent);border:1px solid rgba(0,200,255,.3)}
+    .btn-del{background:rgba(255,82,82,.1);color:var(--danger);border:1px solid rgba(255,82,82,.3)}
+
+    /* ── TABLE ── */
+    .tbl-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border)}
+    table{width:100%;border-collapse:collapse;font-size:.88rem}
+    thead tr{background:var(--surface2)}
+    th{padding:12px 16px;text-align:left;font-size:.75rem;letter-spacing:1.5px;color:var(--muted);font-weight:700;white-space:nowrap}
+    td{padding:12px 16px;border-top:1px solid var(--border);vertical-align:middle}
+    tr:hover td{background:rgba(255,255,255,.02)}
+    .empty{text-align:center;padding:40px;color:var(--muted);font-size:.9rem}
+
+    /* ── STATUS BADGE ── */
+    .status{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:700;letter-spacing:.5px}
+    .status-pending{background:rgba(255,152,0,.15);color:var(--warn)}
+    .status-paid{background:rgba(0,230,118,.15);color:var(--success)}
+    .status-cancelled{background:rgba(255,82,82,.15);color:var(--danger)}
+
+    /* ── MODAL ── */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px}
+    .modal-overlay.show{display:flex}
+    .modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+    .modal h3{font-family:'Oswald',sans-serif;font-size:1.1rem;letter-spacing:2px;color:var(--accent);margin-bottom:24px}
+    .field{margin-bottom:16px}
+    .field label{display:block;font-size:.75rem;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+    .field input,.field select,.field textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'Montserrat',sans-serif;font-size:.9rem;outline:none;transition:.2s}
+    .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}
+    .field select option{background:var(--surface2)}
+    .modal-actions{display:flex;gap:12px;margin-top:24px;justify-content:flex-end}
+    .btn-cancel{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
+    .btn-save{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000}
+
+    /* ── STATS ── */
+    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:28px}
+    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px}
+    .stat-label{font-size:.72rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+    .stat-val{font-family:'Oswald',sans-serif;font-size:1.8rem;font-weight:700;color:var(--accent)}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">THUỶ&nbsp;<span>T</span>ỘC</div>
+  <span class="badge">ADMIN CRM</span>
+</header>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('products')">📦 Sản Phẩm</button>
+  <button class="tab" onclick="switchTab('customers')">👥 Khách Hàng</button>
+  <button class="tab" onclick="switchTab('orders')">🛒 Đơn Hàng</button>
+</div>
+
+<!-- ══ PRODUCTS ══════════════════════════════════════════════════════ -->
+<div class="content active" id="tab-products">
+  <div class="toolbar">
+    <h2>DANH SÁCH SẢN PHẨM</h2>
+    <button class="btn btn-add" onclick="openModal('product')">+ Thêm Sản Phẩm</button>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>ID</th><th>Tên sản phẩm</th><th>Giá</th><th>Mô tả</th><th>Còn lại</th><th>Ngày tạo</th><th>Thao tác</th></tr></thead>
+      <tbody id="products-body"><tr><td class="empty" colspan="7">Đang tải...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══ CUSTOMERS ═════════════════════════════════════════════════════ -->
+<div class="content" id="tab-customers">
+  <div class="toolbar">
+    <h2>DANH SÁCH KHÁCH HÀNG</h2>
+    <button class="btn btn-add" onclick="openModal('customer')">+ Thêm Khách Hàng</button>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>ID</th><th>Tên</th><th>Số điện thoại</th><th>Zalo</th><th>Ngày đăng ký</th><th>Thao tác</th></tr></thead>
+      <tbody id="customers-body"><tr><td class="empty" colspan="6">Đang tải...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══ ORDERS ════════════════════════════════════════════════════════ -->
+<div class="content" id="tab-orders">
+  <div class="stats" id="order-stats"></div>
+  <div class="toolbar">
+    <h2>DANH SÁCH ĐƠN HÀNG</h2>
+    <button class="btn btn-add" onclick="openModal('order')">+ Thêm Đơn Hàng</button>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>ID</th><th>Khách hàng</th><th>Sản phẩm</th><th>Số tiền</th><th>Trạng thái</th><th>Ngày mua</th><th>Thao tác</th></tr></thead>
+      <tbody id="orders-body"><tr><td class="empty" colspan="7">Đang tải...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══ MODAL ══════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3 id="modal-title">Thêm mới</h3>
+    <div id="modal-body"></div>
+    <div class="modal-actions">
+      <button class="btn btn-cancel" onclick="closeModal()">Huỷ</button>
+      <button class="btn btn-save" onclick="submitModal()">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '';   // same origin
+let modalType = '', editId = null;
+let allProducts = [], allCustomers = [];
+
+// ── Tab switching ───────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const names = ['products','customers','orders'];
+    t.classList.toggle('active', names[i] === name);
+  });
+  document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  load(name);
+}
+
+// ── Load data ───────────────────────────────────────────────────────
+async function load(type) {
+  const res = await fetch(`${API}/api/${type}`);
+  const data = await res.json();
+  if (type === 'products')  { allProducts  = data; renderProducts(data); }
+  if (type === 'customers') { allCustomers = data; renderCustomers(data); }
+  if (type === 'orders')    { renderOrders(data); }
+}
+
+function fmt(n) { return Number(n).toLocaleString('vi-VN') + ' đ'; }
+function fmtDate(s) { return s ? s.slice(0,10) : '—'; }
+
+// ── Render Products ─────────────────────────────────────────────────
+function renderProducts(rows) {
+  const b = document.getElementById('products-body');
+  if (!rows.length) { b.innerHTML = `<tr><td class="empty" colspan="7">Chưa có sản phẩm nào</td></tr>`; return; }
+  b.innerHTML = rows.map(r => `
+    <tr>
+      <td>${r.id}</td>
+      <td><strong>${r.name}</strong></td>
+      <td>${fmt(r.price)}</td>
+      <td style="color:var(--muted);max-width:200px">${r.description||'—'}</td>
+      <td><strong style="color:${r.quantity>0?'var(--success)':'var(--danger)'}">${r.quantity}</strong></td>
+      <td>${fmtDate(r.created_at)}</td>
+      <td style="white-space:nowrap;display:flex;gap:6px">
+        <button class="btn btn-sm btn-edit" onclick="editRow('product',${r.id})">✏️</button>
+        <button class="btn btn-sm btn-del" onclick="delRow('products',${r.id})">🗑</button>
+      </td>
+    </tr>`).join('');
+}
+
+// ── Render Customers ────────────────────────────────────────────────
+function renderCustomers(rows) {
+  const b = document.getElementById('customers-body');
+  if (!rows.length) { b.innerHTML = `<tr><td class="empty" colspan="6">Chưa có khách hàng nào</td></tr>`; return; }
+  b.innerHTML = rows.map(r => `
+    <tr>
+      <td>${r.id}</td>
+      <td><strong>${r.name}</strong></td>
+      <td>${r.phone||'—'}</td>
+      <td>${r.zalo||'—'}</td>
+      <td>${fmtDate(r.registered_at)}</td>
+      <td style="white-space:nowrap;display:flex;gap:6px">
+        <button class="btn btn-sm btn-edit" onclick="editRow('customer',${r.id})">✏️</button>
+        <button class="btn btn-sm btn-del" onclick="delRow('customers',${r.id})">🗑</button>
+      </td>
+    </tr>`).join('');
+}
+
+// ── Render Orders ───────────────────────────────────────────────────
+function renderOrders(rows) {
+  // Stats
+  const total = rows.reduce((s,r) => s + Number(r.amount||0), 0);
+  const paid  = rows.filter(r => r.status === 'paid').reduce((s,r) => s + Number(r.amount||0), 0);
+  document.getElementById('order-stats').innerHTML = `
+    <div class="stat-card"><div class="stat-label">Tổng đơn hàng</div><div class="stat-val">${rows.length}</div></div>
+    <div class="stat-card"><div class="stat-label">Đã thanh toán</div><div class="stat-val">${rows.filter(r=>r.status==='paid').length}</div></div>
+    <div class="stat-card"><div class="stat-label">Doanh thu</div><div class="stat-val" style="font-size:1.2rem">${fmt(paid)}</div></div>
+    <div class="stat-card"><div class="stat-label">Tổng giá trị</div><div class="stat-val" style="font-size:1.2rem">${fmt(total)}</div></div>`;
+
+  const b = document.getElementById('orders-body');
+  if (!rows.length) { b.innerHTML = `<tr><td class="empty" colspan="7">Chưa có đơn hàng nào</td></tr>`; return; }
+  b.innerHTML = rows.map(r => `
+    <tr>
+      <td>#${r.id}</td>
+      <td><strong>${r.customer_name||'—'}</strong><br><span style="color:var(--muted);font-size:.78rem">${r.customer_phone||''}</span></td>
+      <td>${r.product_name||'—'}</td>
+      <td><strong>${fmt(r.amount)}</strong></td>
+      <td><span class="status status-${r.status}">${statusLabel(r.status)}</span></td>
+      <td>${fmtDate(r.ordered_at)}</td>
+      <td style="white-space:nowrap;display:flex;gap:6px">
+        <button class="btn btn-sm btn-edit" onclick="editRow('order',${r.id})">✏️</button>
+        <button class="btn btn-sm btn-del" onclick="delRow('orders',${r.id})">🗑</button>
+      </td>
+    </tr>`).join('');
+}
+
+function statusLabel(s) {
+  return {pending:'⏳ Chờ TT', paid:'✅ Đã TT', cancelled:'❌ Huỷ'}[s] || s;
+}
+
+// ── Modal ───────────────────────────────────────────────────────────
+function openModal(type, data={}) {
+  modalType = type; editId = data.id || null;
+  document.getElementById('modal-title').textContent = (editId ? 'Chỉnh sửa' : 'Thêm mới') + ' — ' + {product:'Sản phẩm',customer:'Khách hàng',order:'Đơn hàng'}[type];
+  document.getElementById('modal-body').innerHTML = buildForm(type, data);
+  document.getElementById('modal').classList.add('show');
+}
+
+function buildForm(type, d) {
+  if (type === 'product') return `
+    <div class="field"><label>Tên sản phẩm *</label><input id="f-name" value="${d.name||''}" placeholder="VD: Khoá học Surfing 3 ngày"/></div>
+    <div class="field"><label>Giá (VNĐ) *</label><input id="f-price" type="number" value="${d.price||''}" placeholder="4500000"/></div>
+    <div class="field"><label>Mô tả</label><textarea id="f-description" rows="3" placeholder="Mô tả ngắn về sản phẩm...">${d.description||''}</textarea></div>
+    <div class="field"><label>Số lượng còn lại</label><input id="f-quantity" type="number" value="${d.quantity||0}"/></div>`;
+
+  if (type === 'customer') return `
+    <div class="field"><label>Họ và tên *</label><input id="f-name" value="${d.name||''}" placeholder="Nguyễn Văn A"/></div>
+    <div class="field"><label>Số điện thoại</label><input id="f-phone" value="${d.phone||''}" placeholder="0901234567"/></div>
+    <div class="field"><label>Zalo</label><input id="f-zalo" value="${d.zalo||''}" placeholder="0901234567"/></div>`;
+
+  const pOpts = allProducts.map(p => `<option value="${p.id}" ${p.id==d.product_id?'selected':''}>${p.name} — ${fmt(p.price)}</option>`).join('');
+  const cOpts = allCustomers.map(c => `<option value="${c.id}" ${c.id==d.customer_id?'selected':''}>${c.name} — ${c.phone||''}</option>`).join('');
+  return `
+    <div class="field"><label>Khách hàng *</label><select id="f-customer_id"><option value="">— Chọn khách hàng —</option>${cOpts}</select></div>
+    <div class="field"><label>Sản phẩm *</label><select id="f-product_id" onchange="fillAmount(this)">${pOpts}</select></div>
+    <div class="field"><label>Số tiền (VNĐ) *</label><input id="f-amount" type="number" value="${d.amount||''}" placeholder="4500000"/></div>
+    <div class="field"><label>Trạng thái</label>
+      <select id="f-status">
+        <option value="pending" ${d.status==='pending'||!d.status?'selected':''}>⏳ Chờ thanh toán</option>
+        <option value="paid" ${d.status==='paid'?'selected':''}>✅ Đã thanh toán</option>
+        <option value="cancelled" ${d.status==='cancelled'?'selected':''}>❌ Huỷ</option>
+      </select>
+    </div>`;
+}
+
+function fillAmount(sel) {
+  const p = allProducts.find(p => p.id == sel.value);
+  if (p) document.getElementById('f-amount').value = p.price;
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+  editId = null;
+}
+
+async function submitModal() {
+  const data = {};
+  document.querySelectorAll('#modal-body [id^="f-"]').forEach(el => {
+    data[el.id.slice(2)] = el.value;
+  });
+
+  const tableMap = {product:'products', customer:'customers', order:'orders'};
+  const table = tableMap[modalType];
+  const url = editId ? `${API}/api/${table}/${editId}` : `${API}/api/${table}`;
+  const method = editId ? 'PUT' : 'POST';
+
+  await fetch(url, { method, headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) });
+  closeModal();
+  load(table);
+}
+
+async function editRow(type, id) {
+  await load('products');
+  await load('customers');
+  const tableMap = {product:'products', customer:'customers', order:'orders'};
+  const res = await fetch(`${API}/api/${tableMap[type]}`);
+  const rows = await res.json();
+  const row = rows.find(r => r.id === id) || {};
+  openModal(type, row);
+}
+
+async function delRow(table, id) {
+  if (!confirm('Xác nhận xoá?')) return;
+  await fetch(`${API}/api/${table}/${id}`, {method:'DELETE'});
+  load(table);
+}
+
+// ── Init ─────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', async () => {
+  await load('products');
+  await load('customers');
+});
+</script>
+</body>
+</html>

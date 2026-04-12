@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="THUỶ TỘC - Trải nghiệm Thể thao Biển Đỉnh Cao. Khám phá các khoá học lướt ván, chèo SUP, kitesurfing chuyên nghiệp.">
+    <title>THUỶ TỘC | The Art of Water Sports</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Oswald:wght@500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Leaflet CSS & JS for Maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+
+<body>
+
+    <!-- Header & Navigation -->
+    <header id="main-header">
+        <div class="logo">
+            <span class="logo-text">THUỶ&nbsp;</span><span class="logo-accent"
+                style="display: inline-flex; align-items: center;">T<svg class="water-drop-letter" viewBox="0 0 24 28"
+                    fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8.5 4 L12 1.5 L15.5 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" fill="none" />
+                    <path d="M12 23.5c-3 0-6-2.5-6-6.5 0-4.5 6-12 6-12s6 7.5 6 12c0 4-3 6.5-6 6.5z" />
+                    <circle cx="12" cy="27" r="1.5" />
+                </svg>C</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#about">Về Chúng Tôi</a></li>
+                <li><a href="#courses">Khoá Học</a></li>
+                <li><a href="#methodology">Phương Pháp</a></li>
+                <li><a href="https://zalo.me/0339481070" target="_blank" class="btn-primary nav-btn">Đăng Ký Qua
+                        Zalo</a></li>
+            </ul>
+        </nav>
+        <div class="mobile-menu-btn">☰</div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <!-- Video Background using a sample action sports video -->
+        <video autoplay loop muted playsinline class="hero-video">
+            <!-- Using a free sample video from Pexels for surfing -->
+            <source src="videos/DJI_20260123050346_0033_D.MP4" type="video/mp4">
+            Trình duyệt của bạn không hỗ trợ thẻ video.
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="hero-content fade-in-up">
+            <h2 class="sub-headline">Vượt Lên Giới Hạn</h2>
+            <h1 class="main-headline">SẴN SÀNG<br>CHINH PHỤC ĐẠI DƯƠNG</h1>
+            <p class="hero-description">Trải nghiệm những khoá học thể thao biển chuyên nghiệp nhất. Đánh thức bản năng
+                khám phá bên trong bạn với hàng loạt bộ môn mạo hiểm mang phong cách sống đỉnh cao.</p>
+            <div class="hero-actions">
+                <a href="#courses" class="btn-primary large-btn">Khám Phá Các Khoá Học</a>
+                <a href="#video-tour" class="btn-secondary play-btn">
+                    <span class="play-icon">▶</span> Tinh Thần Thuỷ Tộc
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Methodology / Philosophy Section (Surf Simply inspired) -->
+    <section class="methodology" id="about">
+        <div class="container flex-row">
+            <div class="methodology-text slide-in-left">
+                <h3 class="section-subtitle">Phương Pháp Của Chúng Tôi</h3>
+                <h2 class="section-title">Không Chỉ Là Dạy Kỹ Năng.<br>Chúng Tôi Tạo Ra Phong Cách Sống.</h2>
+                <p>Khác với những trung tâm thông thường, **THUỶ TỘC** áp dụng phương pháp huấn luyện dựa trên khoa học
+                    cơ thể và thấu hiểu tâm lý. Chúng tôi phân tích từng chuyển động của bạn, đảm bảo 100% người học
+                    tiến bộ rõ rệt chỉ sau một khoá học.</p>
+                <p>Dù bạn là người mới bắt đầu lo sợ sóng nước, hay người chơi lâu năm muốn phá vỡ giới hạn, các huấn
+                    luyện viên chuẩn quốc tế của chúng tôi sẽ đồng hành cùng bạn.</p>
+                <a href="#team" class="link-arrow">Tìm hiểu về đội ngũ HLV →</a>
+            </div>
+            <div class="methodology-image slide-in-right">
+                <!-- Fallback to generated image using URL -->
+                <div class="image-wrapper">
+                    <img src="images/AdobeStock_135309776-1-scaled.jpeg" alt="Huấn luyện lướt ván chuyên nghiệp">
+                    <div class="experience-badge">
+                        <span class="years">10+</span>
+                        <span class="text">Năm Kinh Nghiệm</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Section -->
+    <section class="courses" id="courses">
+        <div class="container text-center">
+            <h3 class="section-subtitle">Hành Trình Của Bạn</h3>
+            <h2 class="section-title">Chọn Bộ Môn Đam Mê</h2>
+
+            <div class="cards-grid">
+                <!-- Card 1 -->
+                <div class="course-card fade-in-up" style="transition-delay: 0.1s;">
+                    <div class="card-image" style="background-image: url('images/Surfing-Skill-Levels-Explained-From-L1-to-L4-1.jpg');">
+                        <div class="card-tag">Bán Chạy Nhất</div>
+                    </div>
+                    <div class="card-content">
+                        <h4>Lướt Ván (Surfing)</h4>
+                        <p>Từ kỹ thuật đứng ván cơ bản đến những đường lướt cắt sóng điệu nghệ. Chinh phục từng con sóng
+                            lớn cùng HLV 1-kèm-1.</p>
+                        <div class="card-meta">
+                            <span class="duration">⏱ 3 Ngày</span>
+                            <span class="location">📍 Nha Trang</span>
+                            <span class="level">🎯 Tất cả</span>
+                        </div>
+                        <div class="card-price">4.500.000 VNĐ</div>
+                        <a href="thanh-toan.html?course=surfing" class="btn-primary" style="display:block;text-align:center;margin-bottom:8px;">Đăng Ký Ngay</a>
+                        <a href="https://zalo.me/0339481070" target="_blank" class="btn-outline">Tư Vấn Lịch Trình (Zalo)</a>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="course-card fade-in-up" style="transition-delay: 0.3s;">
+                    <div class="card-image" style="background-image: url('images/kitesurfing-talamone.jpg');">
+                    </div>
+                    <div class="card-content">
+                        <h4>Lướt Ván Diều (Kite Surfing)</h4>
+                        <p>Bay lên cùng sức gió. Khoá học đỉnh cao mang lại cảm giác giải phóng hoàn toàn và kiểm soát
+                            chiếc dù của bạn trên không.</p>
+                        <div class="card-meta">
+                            <span class="duration">⏱ 5 Ngày</span>
+                            <span class="location">📍 Phú Quý</span>
+                            <span class="level">🎯 Nâng cao</span>
+                        </div>
+                        <div class="card-price">8.900.000 VNĐ</div>
+                        <a href="thanh-toan.html?course=kite" class="btn-primary" style="display:block;text-align:center;margin-bottom:8px;">Đăng Ký Ngay</a>
+                        <a href="https://zalo.me/0339481070" target="_blank" class="btn-outline">Tư Vấn Lịch Trình (Zalo)</a>
+                    </div>
+                </div>
+                <!-- Card Ưu Đãi -->
+                <div class="course-card fade-in-up" style="transition-delay: 0.4s; border: 2px solid rgba(255,152,0,0.6);">
+                    <div class="card-image" style="background-image: url('images/efoil-1500x1155.jpg');">
+                        <div class="card-tag" style="background: linear-gradient(135deg, #ff9800, #ff5722); color: #000;">🔥 Ưu Đãi Lần Đầu</div>
+                    </div>
+                    <div class="card-content">
+                        <h4>SUP Trải Nghiệm Lần Đầu</h4>
+                        <p>Chỉ dành cho khách <strong>lần đầu</strong> trải nghiệm SUP tại Phú Quốc. Cơ hội đặc biệt để khám phá môn thể thao biển với giá ưu đãi cực sốc.</p>
+                        <div class="card-meta">
+                            <span class="duration">⏱ 1 Ngày</span>
+                            <span class="location">📍 Phú Quốc</span>
+                            <span class="level">🎯 Lần đầu</span>
+                        </div>
+                        <div class="card-price" style="color: #ff9800;">2.000 VNĐ <span style="font-size:0.75rem; color: #888; text-decoration: line-through; font-family: 'Montserrat', sans-serif; font-weight: 400;">1.200.000 VNĐ</span></div>
+                        <a href="thanh-toan.html?course=sup-uudai" class="btn-primary" style="display:block;text-align:center;margin-bottom:8px;background:linear-gradient(135deg,#ff9800,#ff5722);color:#000;">Đăng Ký Ưu Đãi Ngay</a>
+                        <a href="https://zalo.me/0339481070" target="_blank" class="btn-outline">Tư Vấn Lịch Trình (Zalo)</a>
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="course-card fade-in-up" style="transition-delay: 0.5s;">
+                    <div class="card-image" style="background-image: url('images/efoil-1500x1155.jpg');">
+                    </div>
+                    <div class="card-content">
+                        <h4>SUP & Efoil</h4>
+                        <p>Nhẹ nhàng thư giãn trên mặt hồ hay cảm giác "lơ lửng" trên mặt nước biển cực êm ái với công
+                            nghệ ván Foiling mới nhất.</p>
+                        <div class="card-meta">
+                            <span class="duration">⏱ 1 Ngày</span>
+                            <span class="location">📍 Phú Quốc</span>
+                            <span class="level">🎯 Cơ bản</span>
+                        </div>
+                        <div class="card-price">1.200.000 VNĐ</div>
+                        <a href="thanh-toan.html?course=sup" class="btn-primary" style="display:block;text-align:center;margin-bottom:8px;">Đăng Ký Ngay</a>
+                        <a href="https://zalo.me/0339481070" target="_blank" class="btn-outline">Tư Vấn Lịch Trình (Zalo)</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Locations Map Section -->
+    <section class="locations" id="locations">
+        <div class="container">
+            <div class="text-center slide-in-left">
+                <h3 class="section-subtitle">Đế chế Thuỷ Tộc</h3>
+                <h2 class="section-title">Hệ Thống Trạm Vận Hành Khắp Việt Nam</h2>
+                <p style="margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto; color: #ccc;">Từ
+                    những vùng biển êm ái cho người mới đến những con bão lớn thách thức pro-riders. Hãy chọn điểm đến
+                    tiếp theo của bạn.</p>
+            </div>
+            <div id="locations-map" class="fade-in-up"
+                style="height: 500px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 40px rgba(0,0,0,0.5); z-index: 10;">
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Banner -->
+    <section class="cta-banner" id="contact">
+        <div class="container text-center fade-in-up">
+            <h2>Đăng Ký Danh Sách Chờ Khóa Học!</h2>
+            <p>Điền thông tin bên dưới để nhận tư vấn và giữ chỗ sớm nhất cho các khoá huấn luyện Thủy Tộc.</p>
+            
+            <!-- Survey Form -->
+            <div class="waitlist-form-container" style="max-width: 500px; margin: 40px auto; background: rgba(0,0,0,0.5); padding: 30px; border-radius: 12px; border: 1px solid rgba(0, 150, 255, 0.3);">
+                <form id="waitlistForm" style="display: flex; flex-direction: column; gap: 15px; text-align: left;">
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-family: 'Montserrat', sans-serif; font-size: 0.9rem;">1. Họ và tên của bạn?</label>
+                        <input type="text" name="name" required style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #444; background: rgba(255,255,255,0.1); color: #fff; font-family: 'Montserrat', sans-serif;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-family: 'Montserrat', sans-serif; font-size: 0.9rem;">2. Số điện thoại (Zalo)?</label>
+                        <input type="tel" name="phone" required style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #444; background: rgba(255,255,255,0.1); color: #fff; font-family: 'Montserrat', sans-serif;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-family: 'Montserrat', sans-serif; font-size: 0.9rem;">3. Kinh nghiệm thể thao nước?</label>
+                        <select name="experience" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #444; background: rgba(0,0,0,0.8); color: #fff; font-family: 'Montserrat', sans-serif;">
+                            <option value="Chưa từng">Chưa từng chơi môn nào</option>
+                            <option value="Đã từng môn khác">Đã từng chơi môn khác</option>
+                            <option value="Đã có kinh nghiệm">Đã có kinh nghiệm</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-family: 'Montserrat', sans-serif; font-size: 0.9rem;">4. Mục tiêu lớn nhất của bạn?</label>
+                        <select name="goal" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #444; background: rgba(0,0,0,0.8); color: #fff; font-family: 'Montserrat', sans-serif;">
+                            <option value="Mạo hiểm">Vượt qua giới hạn</option>
+                            <option value="Xả stress">Xả stress cuối tuần</option>
+                            <option value="Trải nghiệm mới">Trải nghiệm môn mới</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-family: 'Montserrat', sans-serif; font-size: 0.9rem;">5. Dự định tham gia khi nào?</label>
+                        <select name="timeline" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #444; background: rgba(0,0,0,0.8); color: #fff; font-family: 'Montserrat', sans-serif;">
+                            <option value="Tháng này">Trong tháng này</option>
+                            <option value="Tháng sau">Tháng sau</option>
+                            <option value="Tham khảo">Đang tham khảo thêm</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary large-btn" style="margin-top: 10px; border: none; cursor: pointer; width: 100%; font-family: 'Montserrat', sans-serif; font-weight: 600;">GỬI THÔNG TIN VÀ GIỮ CHỖ</button>
+                    <div id="formMessage" style="display: none; text-align: center; margin-top: 10px; color: #00ff88; font-weight: 600;">Đã lưu thành công! Chúng tôi sẽ liên hệ sớm.</div>
+                </form>
+            </div>
+            
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <div class="logo">
+                    <span class="logo-text">THUỶ&nbsp;</span><span class="logo-accent"
+                        style="display: inline-flex; align-items: center;">T<svg class="water-drop-letter"
+                            viewBox="0 0 24 28" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8.5 4 L12 1.5 L15.5 4" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                            <path d="M12 23.5c-3 0-6-2.5-6-6.5 0-4.5 6-12 6-12s6 7.5 6 12c0 4-3 6.5-6 6.5z" />
+                            <circle cx="12" cy="27" r="1.5" />
+                        </svg>C</span>
+                </div>
+                <p>Nơi phong cách sống thể thao biển hội tụ. Trung tâm huấn luyện và cung cấp thiết bị chuẩn quốc tế.
+                </p>
+            </div>
+            <div class="footer-links">
+                <h4>Khám phá</h4>
+                <ul>
+                    <li><a href="#">Trang chủ</a></li>
+                    <li><a href="#">Khoá học lướt ván</a></li>
+                    <li><a href="#">Khoá học Kite Surfing</a></li>
+                    <li><a href="#">Thiết bị thể thao</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4>Liên hệ</h4>
+                <p>📞 +84 123 456 789</p>
+                <p>✉️ hello@thuytoc.com</p>
+                <p>🏖 Biển Bình Châu, Việt Nam</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Thuỷ Tộc Water Sports. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Chatbot Widget -->
+    <div id="chatbot-toggle" title="Chat với Thuỷ Tộc">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+    </div>
+
+    <div id="chatbot-window">
+        <div class="chatbot-header">
+            <div class="chatbot-header-info">
+                <div class="chatbot-avatar">🌊</div>
+                <div>
+                    <div class="chatbot-name">Thuỷ Tộc</div>
+                    <div class="chatbot-status">Online — trả lời ngay</div>
+                </div>
+            </div>
+            <button id="chatbot-close">&times;</button>
+        </div>
+        <div id="chatbot-messages"></div>
+        <div class="chatbot-quick-buttons" id="chatbot-quick">
+            <button data-q="courses">Các khoá học</button>
+            <button data-q="price">Bảng giá</button>
+            <button data-q="safety">An toàn?</button>
+            <button data-q="booking">Đặt lịch</button>
+        </div>
+        <div class="chatbot-input-area">
+            <input type="text" id="chatbot-input" placeholder="Nhập câu hỏi..." autocomplete="off">
+            <button id="chatbot-send">➤</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

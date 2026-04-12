@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: thuytoc-api
+    runtime: python
+    buildCommand: "echo 'No build needed'"
+    startCommand: "python server.py"
+    envVars:
+      - key: DB_PATH
+        value: /data/brain.db
+    disk:
+      name: thuytoc-db
+      mountPath: /data
+      sizeGB: 1
