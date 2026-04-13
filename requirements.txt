@@ -1,2 +1,2 @@
-# No external dependencies - using Python stdlib only
 # Python 3.9+ required
+resend>=2.0.0

@@ -263,6 +263,8 @@ class AdminHandler(http.server.SimpleHTTPRequestHandler):
         p = self.path.split('?')[0]
         if p == '/admin':
             self.serve_file('admin.html')
+        elif p == '/health':
+            self.send_json({'status': 'ok', 'time': datetime.now().isoformat()})
         elif p == '/api/products':
             self.api_list('products')
         elif p == '/api/customers':
@@ -602,11 +604,30 @@ class AdminHandler(http.server.SimpleHTTPRequestHandler):
         pass
 
 
+def keep_alive():
+    """Self-ping mỗi 14 phút để Render free tier không sleep (ngủ sau 15 phút)"""
+    import urllib.request
+    while True:
+        time.sleep(14 * 60)  # 14 phút
+        try:
+            url = f'http://localhost:{PORT}/health'
+            urllib.request.urlopen(url, timeout=10)
+            print(f'[KEEPALIVE] 💓 Ping lúc {datetime.now().strftime("%H:%M:%S")}')
+        except Exception as e:
+            print(f'[KEEPALIVE] ⚠️ Ping thất bại: {e}')
+
+
 if __name__ == '__main__':
     init_db()
     print(f'✅ Server chạy tại http://localhost:{PORT}')
     print(f'🔧 Admin panel : http://localhost:{PORT}/admin')
     print(f'🪝 Webhook URL : http://localhost:{PORT}/api/sepay-webhook')
+    print(f'💓 Keep-alive  : tự ping mỗi 14 phút để không sleep')
+
+    # Bắt đầu keep-alive thread
+    t = threading.Thread(target=keep_alive, daemon=True)
+    t.start()
+
     with socketserver.TCPServer(('', PORT), AdminHandler) as httpd:
         httpd.allow_reuse_address = True
         httpd.serve_forever()
