@@ -111,8 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
         waitlistForm.addEventListener('submit', function(e) {
             e.preventDefault();
             const formData = new FormData(waitlistForm);
-            
-            fetch('/submit', {
+            fetch('https://thuytoc-backend.onrender.com/submit', {
                 method: 'POST',
                 body: new URLSearchParams(formData)
             })
