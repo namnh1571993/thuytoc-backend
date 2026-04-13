@@ -112,8 +112,8 @@
   </div>
   <div class="tbl-wrap">
     <table>
-      <thead><tr><th>ID</th><th>Tên</th><th>Số điện thoại</th><th>Zalo</th><th>Ngày đăng ký</th><th>Thao tác</th></tr></thead>
-      <tbody id="customers-body"><tr><td class="empty" colspan="6">Đang tải...</td></tr></tbody>
+      <thead><tr><th>ID</th><th>Tên</th><th>Số điện thoại</th><th>Zalo</th><th>Email</th><th>Ngày đăng ký</th><th>Thao tác</th></tr></thead>
+      <tbody id="customers-body"><tr><td class="empty" colspan="7">Đang tải...</td></tr></tbody>
     </table>
   </div>
 </div>
@@ -146,7 +146,7 @@
 </div>
 
 <script>
-const API = '';   // same origin
+const API = 'https://thuytoc-backend.onrender.com'; // Backend chạy trên Render
 let modalType = '', editId = null;
 let allProducts = [], allCustomers = [];
 
@@ -195,13 +195,14 @@ function renderProducts(rows) {
 // ── Render Customers ────────────────────────────────────────────────
 function renderCustomers(rows) {
   const b = document.getElementById('customers-body');
-  if (!rows.length) { b.innerHTML = `<tr><td class="empty" colspan="6">Chưa có khách hàng nào</td></tr>`; return; }
+  if (!rows.length) { b.innerHTML = `<tr><td class="empty" colspan="7">Chưa có khách hàng nào</td></tr>`; return; }
   b.innerHTML = rows.map(r => `
     <tr>
       <td>${r.id}</td>
       <td><strong>${r.name}</strong></td>
       <td>${r.phone||'—'}</td>
       <td>${r.zalo||'—'}</td>
+      <td>${r.email ? `<a href="mailto:${r.email}" style="color:var(--accent)">${r.email}</a>` : '—'}</td>
       <td>${fmtDate(r.registered_at)}</td>
       <td style="white-space:nowrap;display:flex;gap:6px">
         <button class="btn btn-sm btn-edit" onclick="editRow('customer',${r.id})">✏️</button>
@@ -258,9 +259,10 @@ function buildForm(type, d) {
     <div class="field"><label>Số lượng còn lại</label><input id="f-quantity" type="number" value="${d.quantity||0}"/></div>`;
 
   if (type === 'customer') return `
-    <div class="field"><label>Họ và tên *</label><input id="f-name" value="${d.name||''}" placeholder="Nguyễn Văn A"/></div>
-    <div class="field"><label>Số điện thoại</label><input id="f-phone" value="${d.phone||''}" placeholder="0901234567"/></div>
-    <div class="field"><label>Zalo</label><input id="f-zalo" value="${d.zalo||''}" placeholder="0901234567"/></div>`;
+    <div class="field"><label>Họ và tên *</label><input id="f-name" value="${d.name||\'\'}" placeholder="Nguyễn Văn A"/></div>
+    <div class="field"><label>Số điện thoại</label><input id="f-phone" value="${d.phone||\'\'}" placeholder="0901234567"/></div>
+    <div class="field"><label>Email</label><input id="f-email" type="email" value="${d.email||\'\'}" placeholder="example@gmail.com"/></div>
+    <div class="field"><label>Zalo</label><input id="f-zalo" value="${d.zalo||\'\'}" placeholder="0901234567"/></div>`;
 
   const pOpts = allProducts.map(p => `<option value="${p.id}" ${p.id==d.product_id?'selected':''}>${p.name} — ${fmt(p.price)}</option>`).join('');
   const cOpts = allCustomers.map(c => `<option value="${c.id}" ${c.id==d.customer_id?'selected':''}>${c.name} — ${c.phone||''}</option>`).join('');

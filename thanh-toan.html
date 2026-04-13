@@ -222,9 +222,12 @@
 
 <script>
   // ── Config ───────────────────────────────────────────────────────
+  // Backend chạy trên Render (khác với Vercel - chỉ host static files)
+  // Sau khi deploy Render xong, thay URL bên dưới bằng URL thật của bạn
+  const RENDER_URL = 'https://thuytoc-backend.onrender.com'; // ← ĐỔI URL NÀY
   const API_BASE  = (window.location.protocol === 'file:') 
     ? 'http://localhost:8000' 
-    : window.location.origin;
+    : RENDER_URL;
   const BANK_CODE = 'MB';
   const BANK_ACC  = '0339481070';
   const BANK_NAME = 'NGUYEN HOANG NAM';
