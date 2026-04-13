@@ -34,13 +34,16 @@ def load_resend_config():
 
 
 def get_resend_client():
-    """Set up Resend API key từ config file"""
+    """Set up Resend API key từ env var hoặc config file"""
     if not RESEND_AVAILABLE:
         return None
+    
     cfg = load_resend_config()
-    api_key = cfg.get('RESEND_API_KEY', '')
+    # Ưu tiên lấy từ biến môi trường (Render) trước
+    api_key = os.environ.get('RESEND_API_KEY') or cfg.get('RESEND_API_KEY', '')
+    
     if not api_key or api_key == 'PASTE_YOUR_API_KEY_HERE':
-        print('[EMAIL] ⚠️  Chưa có API Key Resend trong resend_config.txt')
+        print('[EMAIL] ⚠️  Chưa có API Key Resend trong biến môi trường hoặc resend_config.txt')
         return None
     resend.api_key = api_key
     return cfg
