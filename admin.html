@@ -163,11 +163,17 @@ function switchTab(name) {
 
 // ── Load data ───────────────────────────────────────────────────────
 async function load(type) {
-  const res = await fetch(`${API}/api/${type}`);
-  const data = await res.json();
-  if (type === 'products')  { allProducts  = data; renderProducts(data); }
-  if (type === 'customers') { allCustomers = data; renderCustomers(data); }
-  if (type === 'orders')    { renderOrders(data); }
+  try {
+    const res = await fetch(`${API}/api/${type}`);
+    if (!res.ok) throw new Error(`Lỗi mạng: ${res.status}`);
+    const data = await res.json();
+    if (type === 'products')  { allProducts  = data; renderProducts(data); }
+    if (type === 'customers') { allCustomers = data; renderCustomers(data); }
+    if (type === 'orders')    { renderOrders(data); }
+  } catch (err) {
+    console.error("Lỗi tải data:", err);
+    alert(`Không thể tải dữ liệu ${type} từ máy chủ. Lỗi: ` + err.message);
+  }
 }
 
 function fmt(n) { return Number(n).toLocaleString('vi-VN') + ' đ'; }
@@ -259,10 +265,10 @@ function buildForm(type, d) {
     <div class="field"><label>Số lượng còn lại</label><input id="f-quantity" type="number" value="${d.quantity||0}"/></div>`;
 
   if (type === 'customer') return `
-    <div class="field"><label>Họ và tên *</label><input id="f-name" value="${d.name||\'\'}" placeholder="Nguyễn Văn A"/></div>
-    <div class="field"><label>Số điện thoại</label><input id="f-phone" value="${d.phone||\'\'}" placeholder="0901234567"/></div>
-    <div class="field"><label>Email</label><input id="f-email" type="email" value="${d.email||\'\'}" placeholder="example@gmail.com"/></div>
-    <div class="field"><label>Zalo</label><input id="f-zalo" value="${d.zalo||\'\'}" placeholder="0901234567"/></div>`;
+    <div class="field"><label>Họ và tên *</label><input id="f-name" value="${d.name||''}" placeholder="Nguyễn Văn A"/></div>
+    <div class="field"><label>Số điện thoại</label><input id="f-phone" value="${d.phone||''}" placeholder="0901234567"/></div>
+    <div class="field"><label>Email</label><input id="f-email" type="email" value="${d.email||''}" placeholder="example@gmail.com"/></div>
+    <div class="field"><label>Zalo</label><input id="f-zalo" value="${d.zalo||''}" placeholder="0901234567"/></div>`;
 
   const pOpts = allProducts.map(p => `<option value="${p.id}" ${p.id==d.product_id?'selected':''}>${p.name} — ${fmt(p.price)}</option>`).join('');
   const cOpts = allCustomers.map(c => `<option value="${c.id}" ${c.id==d.customer_id?'selected':''}>${c.name} — ${c.phone||''}</option>`).join('');
