@@ -349,8 +349,13 @@ nav ul li a:not(.nav-btn):hover::after {
 .image-wrapper {
     position: relative;
     border-radius: 8px;
-    overflow: hidden;
+    overflow: visible; /* Cho phép badge hiện ra ngoài */
     box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.image-wrapper img {
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 .image-wrapper img {
@@ -918,13 +923,51 @@ footer {
 
 @media screen and (max-width: 768px) {
     nav ul {
-        display: none; /* simple hidden for mobile, in real would use menu */
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: rgba(10, 14, 26, 0.98);
+        backdrop-filter: blur(12px);
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px 5%;
+        gap: 0;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
-    
+
+    nav ul.mobile-open {
+        display: flex;
+    }
+
+    nav ul li {
+        width: 100%;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    nav ul li:last-child {
+        border-bottom: none;
+        padding-top: 12px;
+    }
+
+    nav ul li a {
+        display: block;
+        padding: 14px 0;
+        font-size: 1rem;
+    }
+
+    nav ul li a.nav-btn {
+        display: inline-block;
+        padding: 12px 24px;
+        margin-bottom: 8px;
+    }
+
     .mobile-menu-btn {
         display: block;
     }
-    
+
     .cta-form {
         flex-direction: column;
     }

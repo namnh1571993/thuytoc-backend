@@ -9,14 +9,38 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.scrollY > 50) {
             header.classList.add('scrolled');
         } else {
-            header.classList.add('scrolled'); // Optional: Keep it slightly transparent if desired 
-            if(window.scrollY === 0) {
-                header.classList.remove('scrolled');
-            }
+            header.classList.remove('scrolled');
         }
     });
 
-    // 2. Scroll Animation Observer (Micro-animations)
+    // 2. Mobile Menu Toggle
+    const mobileBtn = document.querySelector('.mobile-menu-btn');
+    const navMenu   = document.querySelector('nav ul');
+
+    if (mobileBtn && navMenu) {
+        mobileBtn.addEventListener('click', () => {
+            const isOpen = navMenu.classList.toggle('mobile-open');
+            mobileBtn.textContent = isOpen ? '✕' : '☰';
+        });
+
+        // Đóng menu khi click vào link
+        navMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('mobile-open');
+                mobileBtn.textContent = '☰';
+            });
+        });
+
+        // Đóng menu khi click ra ngoài
+        document.addEventListener('click', (e) => {
+            if (!header.contains(e.target)) {
+                navMenu.classList.remove('mobile-open');
+                mobileBtn.textContent = '☰';
+            }
+        });
+    }
+
+    // 3. Scroll Animation Observer (Micro-animations)
     const observerOptions = {
         root: null,
         rootMargin: '0px',
@@ -108,8 +132,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // 5. Waitlist Form Submission
     const waitlistForm = document.getElementById('waitlistForm');
     if (waitlistForm) {
+        const submitBtn = waitlistForm.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn ? submitBtn.textContent : '';
+
         waitlistForm.addEventListener('submit', function(e) {
             e.preventDefault();
+
+            // Loading state
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = '⏳ ĐANG GỬI...';
+                submitBtn.style.opacity = '0.7';
+            }
+
             const formData = new FormData(waitlistForm);
             fetch('https://thuytoc-backend.onrender.com/submit', {
                 method: 'POST',
@@ -119,15 +154,34 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 if(data.status === 'success') {
                     waitlistForm.reset();
-                    document.getElementById('formMessage').style.display = 'block';
+                    const msgEl = document.getElementById('formMessage');
+                    msgEl.style.display = 'block';
+                    msgEl.textContent = '✅ Đã lưu thành công! Chúng tôi sẽ liên hệ sớm.';
                     setTimeout(() => {
-                        document.getElementById('formMessage').style.display = 'none';
+                        msgEl.style.display = 'none';
                     }, 5000);
+                } else {
+                    throw new Error('Server trả về lỗi');
                 }
             })
             .catch(error => {
                 console.error("Error submitting form", error);
-                alert("Có lỗi xảy ra, vui lòng thử lại sau.");
+                const msgEl = document.getElementById('formMessage');
+                msgEl.style.display = 'block';
+                msgEl.style.color = '#ff5252';
+                msgEl.textContent = '❌ Có lỗi xảy ra. Vui lòng thử lại hoặc liên hệ Zalo 0339481070.';
+                setTimeout(() => {
+                    msgEl.style.display = 'none';
+                    msgEl.style.color = '#00ff88';
+                }, 6000);
+            })
+            .finally(() => {
+                // Restore button
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalBtnText;
+                    submitBtn.style.opacity = '1';
+                }
             });
         });
     }
