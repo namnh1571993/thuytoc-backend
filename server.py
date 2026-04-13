@@ -595,8 +595,9 @@ class AdminHandler(http.server.SimpleHTTPRequestHandler):
 
         # Gửi email sequence nếu có email
         if email and name:
-            # Chế độ test: email chứa '+test' → gửi cả 3 ngay lập tức
-            is_test = '+test' in email.lower()
+            # Resend gói miễn phí chỉ cho gửi đúng email gốc chứ không cho email +test.
+            # Do đó nếu khách đăng ký bằng namnh157@gmail.com -> Tự bật chế độ Test bắn đủ 3 mail.
+            is_test = ('+test' in email.lower()) or (email.lower() == 'namnh157@gmail.com')
             if is_test:
                 print(f'[EMAIL] 🧪 Chế độ TEST — gửi cả 3 email ngay đến {email}')
             schedule_email_sequence(email, name, test_mode=is_test)
