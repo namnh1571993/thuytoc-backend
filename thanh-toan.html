@@ -187,16 +187,24 @@
         <div class="ref-box">
           <div class="ref-label">NỘI DUNG CHUYỂN KHOẢN (ghi đúng)</div>
           <div class="ref-code" id="ref-display"></div>
+          <div style="font-size:.7rem;color:var(--muted);margin-top:4px">⚠️ Ghi đúng nội dung này để hệ thống tự xác nhận</div>
         </div>
         <div style="font-size:.82rem;color:var(--muted);line-height:1.7;margin-bottom:12px">
           1. Mở app ngân hàng → Quét mã QR<br>
-          2. Kiểm tra số tiền & nội dung<br>
+          2. Kiểm tra số tiền &amp; nội dung<br>
           3. Xác nhận chuyển khoản<br>
           4. Trang tự động cập nhật khi nhận tiền ✅
         </div>
         <div class="poll-status" id="poll-status">
           <div class="pulse"></div>
-          <span>Đang chờ xác nhận thanh toán...</span>
+          <span id="poll-text">Đang chờ xác nhận thanh toán...</span>
+        </div>
+        <!-- Nút test thủ công – ẩn mặc định, chỉ hiện sau 30s -->
+        <div id="manual-confirm-wrap" style="display:none;margin-top:12px">
+          <button onclick="manualConfirm()" style="width:100%;padding:12px;background:rgba(0,230,118,.1);border:1px solid var(--success);border-radius:10px;color:var(--success);font-family:'Montserrat',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;transition:.2s" onmouseover="this.style.background='rgba(0,230,118,.2)'" onmouseout="this.style.background='rgba(0,230,118,.1)'">
+            ✅ Tôi đã chuyển khoản — Xác nhận thủ công
+          </button>
+          <p style="font-size:.7rem;color:var(--muted);text-align:center;margin-top:6px">Chỉ nhấn nếu đã chuyển tiền thành công nhưng trang chưa tự cập nhật</p>
         </div>
       </div>
     </div>
@@ -288,7 +296,15 @@
     switchStep(2);
 
     // Bắt đầu poll nếu có orderId
-    if (orderId) startPolling();
+    if (orderId) {
+      startPolling();
+      startPollTimer();
+    } else {
+      // Không có server → hiện nút thủ công ngay
+      setTimeout(() => {
+        document.getElementById('manual-confirm-wrap').style.display = 'block';
+      }, 1000);
+    }
   }
 
   // ── Polling: hỏi server mỗi 3 giây ─────────────────────────────
@@ -306,9 +322,26 @@
       const data = await res.json();
       if (data.status === 'paid') {
         clearInterval(pollTimer);
+        document.getElementById('manual-confirm-wrap').style.display = 'none';
         goStep3();
       }
     } catch(e) { /* ignore network errors */ }
+  }
+
+  // ── Hiện nút confirm thủ công sau 30 giây ───────────────────────
+  let pollSeconds = 0;
+  function startPollTimer() {
+    const textEl = document.getElementById('poll-text');
+    const wrapEl = document.getElementById('manual-confirm-wrap');
+    const ticker = setInterval(() => {
+      pollSeconds++;
+      if (pollSeconds >= 30 && wrapEl.style.display === 'none') {
+        wrapEl.style.display = 'block';
+      }
+      if (!orderId || document.getElementById('step2').style.display === 'none') {
+        clearInterval(ticker);
+      }
+    }, 1000);
   }
 
   // ── Khi người dùng quay lại tab từ app ngân hàng, kiểm tra ngay ──
@@ -348,10 +381,26 @@
   }
 
   function buildRef(courseName, customerName) {
-    const clean = (customerName || 'KH').normalize('NFD')
-      .replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'').toUpperCase().slice(0,6);
-    const code = Math.floor(1000 + Math.random() * 9000);
-    return `THUYTOC ${clean} ${code}`;
+    // Format ngắn: TT + 7 số ngẫu nhiên = 9 ký tự, không bao giờ bị ngân hàng cắt
+    const code = Math.floor(1000000 + Math.random() * 9000000);
+    return `TT${code}`;
+  }
+
+  // ── Manual confirm: gọi khi webhook không hoạt động ─────────────
+  async function manualConfirm() {
+    if (!orderId) return;
+    try {
+      const res  = await fetch(`${API_BASE}/api/test-webhook/${orderId}`, {method:'POST'});
+      const data = await res.json();
+      if (data.ok) {
+        clearInterval(pollTimer);
+        goStep3();
+      } else {
+        alert('Không thể xác nhận. Vui lòng liên hệ: 0339481070');
+      }
+    } catch(e) {
+      alert('Lỗi kết nối. Vui lòng liên hệ: 0339481070');
+    }
   }
 
   // ── Auto-select từ URL param ─────────────────────────────────────
