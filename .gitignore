@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv
+venv/
+ENV/
+
+# Secrets & Config
+.env
+resend_config.txt
+
+# Databases
+*.db
+*.sqlite
+
+# Data
+waitlist.json
+
+# OS
+.DS_Store
+Thumbs.db

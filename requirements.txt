@@ -1,2 +1,2 @@
-# Python 3.9+ required
-resend>=2.0.0
+resend
+python-dotenv

@@ -17,47 +17,43 @@ except ImportError:
     print('[EMAIL] ⚠️  Package resend chưa cài. Chạy: pip3 install resend')
 
 
-def load_resend_config():
-    """Đọc API Key và cấu hình từ resend_config.txt"""
-    config = {}
-    cfg_path = os.path.join(DIRECTORY, 'resend_config.txt')
-    try:
-        with open(cfg_path, 'r', encoding='utf-8') as f:
+def load_env():
+    """Tải các biến môi trường từ file .env nếu có"""
+    env_path = os.path.join(DIRECTORY, '.env')
+    if os.path.exists(env_path):
+        with open(env_path, 'r', encoding='utf-8') as f:
             for line in f:
                 line = line.strip()
                 if line and not line.startswith('#') and '=' in line:
                     k, v = line.split('=', 1)
-                    config[k.strip()] = v.strip()
-    except Exception as e:
-        print(f'[EMAIL] ⚠️  Không đọc được resend_config.txt: {e}')
-    return config
+                    os.environ[k.strip()] = v.strip()
+        print('[ENV] ✅ Đã tải cấu hình từ .env')
 
+load_env()
 
 def get_resend_client():
-    """Set up Resend API key từ env var hoặc config file"""
+    """Set up Resend API key từ biến môi trường"""
     if not RESEND_AVAILABLE:
         return None
     
-    cfg = load_resend_config()
-    # Ưu tiên lấy từ biến môi trường (Render) trước
-    api_key = os.environ.get('RESEND_API_KEY') or cfg.get('RESEND_API_KEY', '')
+    # Lấy từ biến môi trường (Ưu tiên đã set trên VPS/Render hoặc từ .env)
+    api_key = os.environ.get('RESEND_API_KEY')
     
     if not api_key or api_key == 'PASTE_YOUR_API_KEY_HERE':
         print('[EMAIL] ⚠️  Chưa có API Key Resend trong biến môi trường hoặc resend_config.txt')
         return None
     resend.api_key = api_key
-    return cfg
+    return True
 
 
 def send_email(to_email, subject, html_body, from_name='Thuỷ Tộc Water Sports', from_email='onboarding@resend.dev'):
     """Gửi email qua Resend API"""
-    cfg = get_resend_client()
-    if cfg is None:
+    if not get_resend_client():
         print(f'[EMAIL] ❌ Bỏ qua gửi email đến {to_email} — chưa cấu hình Resend')
         return False
-    # Dùng from email từ config nếu có
-    from_email = cfg.get('FROM_EMAIL', from_email)
-    from_name  = cfg.get('FROM_NAME', from_name)
+    # Dùng from email từ env nếu có
+    from_email = os.environ.get('FROM_EMAIL', from_email)
+    from_name  = os.environ.get('FROM_NAME', from_name)
     try:
         params = {
             'from': f'{from_name} <{from_email}>',

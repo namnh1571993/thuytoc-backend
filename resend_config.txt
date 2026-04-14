@@ -1,7 +1,0 @@
-# Resend Configuration
-# Dán API Key của bạn vào dòng dưới (xóa phần "PASTE_YOUR_API_KEY_HERE")
-RESEND_API_KEY=re_EwU2kagQ_AX6dZtFMF7nyNzKzybSh3g9k
-
-# Email gửi đi (dùng địa chỉ mặc định của Resend trước khi verify domain)
-FROM_EMAIL=onboarding@resend.dev
-FROM_NAME=Thuỷ Tộc Water Sports
